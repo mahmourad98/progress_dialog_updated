@@ -15,7 +15,6 @@ Alignment _progressWidgetAlignment = Alignment.centerLeft;
 TextDirection _direction = TextDirection.ltr;
 
 bool _isShowing = false;
-late BuildContext _context, _dismissingContext;
 ProgressDialogType? _progressDialogType;
 bool _barrierDismissible = true, _showLogs = false;
 
@@ -36,22 +35,23 @@ Widget _progressWidget = Image.asset(assetPath, package: 'progress_dialog_null_s
 
 final GlobalKey<_DialogBodyState> dialogBodyKey = GlobalKey<_DialogBodyState>();
 class ProgressDialog {
+  BuildContext? _context;
   _DialogBody? _dialog;
 
-  ProgressDialog(
-      BuildContext context,
-      {ProgressDialogType? type,
-        bool? isDismissible,
-        bool? showLogs,
-        TextDirection? textDirection,
-        Widget? customBody,
-      }) {
+  ProgressDialog({
+    BuildContext? context,
+    ProgressDialogType? type,
+    bool? isDismissible,
+    bool? showLogs,
+    TextDirection? textDirection,
+    Widget? customBody,
+  }) {
     _context = context;
+    _customBody = customBody;
     _progressDialogType = type ?? ProgressDialogType.normal;
     _barrierDismissible = isDismissible ?? true;
     _showLogs = showLogs ?? false;
     _direction = textDirection ?? TextDirection.ltr;
-    _customBody = customBody;
   }
 
   void style({
@@ -122,7 +122,7 @@ class ProgressDialog {
       if (!_isShowing) throw ProgressDialogException(ProgressDialogExceptionType.alreadyDismissed,);
 
       scheduleMicrotask(() {
-        Navigator.of(_dismissingContext, rootNavigator: true,).pop();
+        Navigator.of(_context!, rootNavigator: true,).pop();
         _isShowing = false;
       });
       if(_showLogs) debugPrint('ProgressDialog dismissed');
@@ -149,10 +149,9 @@ class ProgressDialog {
       _dialog = _DialogBody(key: dialogBodyKey,);
       scheduleMicrotask(() {
         showDialog<dynamic>(
-          context: _context,
+          context: _context!,
           barrierDismissible: _barrierDismissible,
           builder: (BuildContext buildContext,) {
-            _dismissingContext = buildContext;
             return WillPopScope(
               onWillPop: () => Future.value(_barrierDismissible,),
               child: Dialog(
