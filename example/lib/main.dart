@@ -37,7 +37,7 @@ class _MyAppState extends State<MyApp> {
     );
 
     pr.style(
-      widgetAboveTheDialog: Text('meow',),
+      widgetAboveTheDialog: const Text('meow',),
       message: 'Lets dump some huge text into the progress dialog and check whether it can handle the huge text. If it works then not you or me, flutter is awesome',
       borderRadius: 10.0,
       backgroundColor: Colors.white,
@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
 
             Future.delayed(const Duration(seconds: 2)).then((onValue) {
               percentage = percentage + 30.0;
-              print(percentage);
+              debugPrint(percentage.toString());
 
               pr.update(
                 progress: percentage,
@@ -90,15 +90,15 @@ class _MyAppState extends State<MyApp> {
               Future.delayed(const Duration(seconds: 2)).then((value) {
                 percentage = percentage + 30.0;
                 pr.update(progress: percentage, message: "Few more seconds...");
-                print(percentage);
+                debugPrint(percentage.toString());
                 Future.delayed(const Duration(seconds: 2)).then((value) {
                   percentage = percentage + 30.0;
                   pr.update(progress: percentage, message: "Almost done...");
-                  print(percentage);
+                  debugPrint(percentage.toString());
 
                   Future.delayed(const Duration(seconds: 2)).then((value) {
                     pr.hide().whenComplete(() {
-                      print(pr.isShowing());
+                      debugPrint(pr.isShowing().toString());
                     });
                     percentage = 0.0;
                   });
@@ -107,13 +107,13 @@ class _MyAppState extends State<MyApp> {
             });
 
             Future.delayed(const Duration(seconds: 10)).then((onValue) {
-              print("PR status  ${pr.isShowing()}");
+              debugPrint("PR status  ${pr.isShowing()}");
               if (pr.isShowing()) {
                 pr.hide().then((isHidden) {
-                  print(isHidden);
+                  debugPrint(isHidden.toString());
                 });
               }
-              print("PR status  ${pr.isShowing()}");
+              debugPrint("PR status  ${pr.isShowing()}");
             });
           },
         ),
